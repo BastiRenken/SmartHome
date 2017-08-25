@@ -2,8 +2,8 @@
 
 ####################################################################################
 #
-# Bot Name: Smart Home
-# Bot Username: GarageMi3bot
+# Bot Name: XXXXXXXXX
+# Bot Username: XXXXXXXXX
 # https://www.codementor.io/garethdwyer/building-a-telegram-bot-using-python-part-1-goi5fncay
 #
 ####################################################################################
