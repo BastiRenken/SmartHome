@@ -9,3 +9,5 @@ To use the program you need:
 - the token of the bot
 - your Chat-ID
 - the Chat-ID of the other users
+- a Raspberry Pi
+- at least one relais
