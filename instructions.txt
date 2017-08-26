@@ -1,0 +1,7 @@
+How to get a telegram bot:
+
+- add the user @botfather
+- create your bot using /newbot
+- choose name and username
+- save your TOKEN
+- get your chat-ID by typing "curl -X POST https://api.telegram.org/<TOKEN>/getUpdates" into the terminal
