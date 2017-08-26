@@ -2,13 +2,13 @@
 
 ####################################################################################
 #
-# Bot Name: XXXXXXXXX
-# Bot Username: XXXXXXXXX
+# Bot name: XXXXXXXXX
+# Bot username: XXXXXXXXX
 # https://www.codementor.io/garethdwyer/building-a-telegram-bot-using-python-part-1-goi5fncay
 #
 ####################################################################################
 
-# Pakete importieren
+# import packages
 import json
 import requests
 from time import *
@@ -19,41 +19,41 @@ import subprocess
 import os
 import sys
 
-# Variablen für Token und URL definieren
+# definig the variables for the token and the URL
 TOKEN = "qwertz1234567890asdfghjkl0987654321"
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
-# Kontakte
+# users
 USER1 = qwertz
 USER2 = qwertz
 USER3 = qwertz
 USER4 = qwertz
 USER5 = qwertz
 
-# Admin bestimmen
+# identify the admin
 ADMINID = USER1
 
-# GPIO Einstellungen
+# GPIO settings
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
-# Liste der GPIO-Pins
+# list of GPIO pins
 GPIOS = [3, 5, 7, 11, 13, 15, 19, 21]
 
-# GPIO-Pins aus "GPIOS" als angeschaltete Outputs festlegen
+# defining the GPIO pins as switched on outputs
 for i in range(0, 8):
     GPIO.setup(GPIOS[i], GPIO.OUT)
     GPIO.output(GPIOS[i], GPIO.HIGH)
 
-# Datei "Log" resetten
+# reset file "Log"
 Log = open("/home/pi/Desktop/Logfiles/Log.txt", "w")
 Log.close()
 
-# Datei "Log_last" resetten
+# reset file "Log_last"
 Log_last = open("/home/pi/Desktop/Logfiles/Log_last.txt", "w")
 Log_last.close()
 
-# Definitionen
+# definitions
 def get_url(url):
     response = requests.get(url)
     content = response.content.decode("utf8")
@@ -71,7 +71,6 @@ def get_updates(offset=None):
     js = get_json_from_url(url)
     return js
 
-# Abrufen der letzten Nachricht und der Chat-ID der Person
 def get_last_chat_id_and_text(updates):
     num_updates = len(updates["result"])
     last_update = num_updates - 1
@@ -85,24 +84,24 @@ def get_last_update_id(updates):
         update_ids.append(int(update["update_id"]))
     return max(update_ids)
 
-# Antwort mit gleichem Text (Echo)
+# reply eith th same message
 def echo_all(updates):
     for update in updates["result"]:
         text = update["message"]["text"]
         chat = update["message"]["chat"]["id"]
         send_message(text, chat)
 
-# Antwort mit Text "message"
+# reply with the text in "message"
 def reply_with_message(updates, message):
     for update in updates["result"]:
         chat = update["message"]["chat"]["id"]
         send_message(message, chat)
 
-# Nachricht an Sebastian (admin)
+# message to admin
 def message_to_owner(message):
     send_message(message, ADMINID)
 
-# Nachricht schicken
+# sending a message
 def send_message(text, chat_id, reply_markup=None):
     text = urllib.parse.quote_plus(text)
     url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
@@ -110,18 +109,18 @@ def send_message(text, chat_id, reply_markup=None):
         url += "&reply_markup={}".format(reply_markup)
     get_url(url)
 
-# Namen aus der letzten Nachricht abrufen
+# getting the name of the last message
 def get_name(updates):
     num_updates = len(updates["result"])
     last_update = num_updates - 1
     vorname = updates["result"][last_update]["message"]["chat"]["first_name"]
     try:
         nachname = updates["result"][last_update]["message"]["chat"]["last_name"]
-        return(vorname, nachname) # Nachname und Vorname ausgeben
+        return(vorname, nachname) # name and first name
     except KeyError:
-        return(vorname) # Nur Vorname ausgeben
+        return(vorname) # first name only
 
-# GPIO mit Telegram Message ansteuern (1s an)
+# controlling the GPIO pins with a message (1s on)
 def message_gpio_on_off(updates, gpio, ausgabe, antwort):
     print(ausgabe)
     reply_with_message(updates, antwort)
@@ -131,7 +130,7 @@ def message_gpio_on_off(updates, gpio, ausgabe, antwort):
     time.sleep(1)
     GPIO.output(gpiopin, GPIO.HIGH)
 
-# GPIO mit Telegram Message an- bzw. abschalten
+# switching the GPIO pins on and off with a message
 def message_gpio_zustand(updates, gpio, ausgabe, antwort, zustand):
     print(ausgabe)
     reply_with_message(updates, antwort)
@@ -139,12 +138,12 @@ def message_gpio_zustand(updates, gpio, ausgabe, antwort, zustand):
     gpiopin = GPIOS[gpio]
     GPIO.output(gpiopin, zustand)
 
-# Custom Tastatur bauen
+# making a custom keyboard
 def build_keyboard(keyboard, status):
     reply_markup = {"keyboard": keyboard, "one_time_keyboard": status}
     return json.dumps(reply_markup)
         
-# Definition fur das Senden der Nachricht
+# sending the message
 def main():
     sperre = False
     root = False
@@ -167,7 +166,7 @@ def main():
             except TypeError:
                 print("Von %s %s" %(name1))
 
-# Nachrichteninformationen in Datei "Log" schreiben
+# log message data in "Log"
             Log = open("/home/pi/Desktop/Logfiles/Log.txt", "a")
             Log.write(strftime("%d.%m.%Y, %H:%M:%S", localtime()))
             Log.write(": ")
@@ -180,7 +179,7 @@ def main():
             Log.write("\n")
             Log.close()
 
-# Nachrichteninformationen in Datei "Log_all" schreiben
+# log message data in "Log_all"
             Log_all = open("/home/pi/Desktop/Logfiles/Log_all.txt", "a")
             Log_all.write(strftime("%d.%m.%Y, %H:%M:%S", localtime()))
             Log_all.write(": ")
@@ -193,7 +192,7 @@ def main():
             Log_all.write("\n")
             Log_all.close()
 
-# Nachrichteninformationen in Datei "Log_last" schreiben
+# log message data in "Log_last"
             Log_last = open("/home/pi/Desktop/Logfiles/Log_last.txt", "a")
             Log_last.write(strftime("%d.%m.%Y, %H:%M:%S", localtime()))
             Log_last.write(": ")
@@ -225,7 +224,7 @@ def main():
             bashtext = chattext.split(" ", 1)
             bashtextgross = chattextgross.split(" ", 1)
 
-# Zugelassen für Sebastian, Dieter, Benjamin und Geli
+# access for the users 1-4
             if chatid == USER1 or chatid == USER2 or chatid == USER3 or chatid == USER4:
                 if chattext == "tor":
                     if sperre == False:
@@ -233,7 +232,7 @@ def main():
                     else:
                         reply_with_message(updates, "Garagentorsteuerung vom Admin gesperrt!")
                 
-# Tor mit Öffnungszeit
+# opens the garage door for a specific time
                 elif splittext[0] == "tor" and len(splittext) == 2:
                     try:
                         if sperre == False:
@@ -267,7 +266,7 @@ def main():
                     except ValueError:
                         reply_with_message(updates, "Kein Befehl erkannt")
 
-# Tor nach Wartezeit
+# opens the garage door after a specific time
                 elif splittext[0] == "tor" and splittext[1] == "in" and len(splittext) == 3:
                     try:
                         if sperre == False:
@@ -315,12 +314,12 @@ def main():
                     adminnachricht = "Anonym: " + adminnachricht
                     message_to_owner(adminnachricht)
 
-# Tastatur für alle
+# defines a more userfriendly keyboard
                 elif chattext == "tastatur" and chatid != ADMINID: # Tastatur mit "Tor" für Dieter, Benjamin und Geli
                     keyboard = build_keyboard([["Tor"], ["Tor 0", "Tor 1", "Tor 2"], ["Tor in 1", "Tor in 2", "Tor in 3"]], False)
                     send_message("Tastatur eingeblendet", chatid, keyboard)
 
-# Eastereggs
+# eastereggs
                 elif chattext == "42": # Easteregg 42
                     print("Easteregg 42")
                     reply_with_message(updates, "the answer to life the universe and everything")
@@ -328,7 +327,7 @@ def main():
                     print("Easteregg Pi")
                     reply_with_message(updates, "3.14159 26535 89793 23846 26433 83279 50288 41971 69399 37510")
 
-# Hilfe
+# help
                 elif chattext == "?":
                     reply_with_message(updates, "Verfügbare Befehle: \n \n- Tor \n- Nachricht ... \n- Anonym ...")
                     if get_last_chat_id_and_text(updates)[1] == ADMINID:
@@ -336,7 +335,7 @@ def main():
                         reply_with_message(updates, "Erweiterte Funktionen (Erreichbar mit 'root'): \n \n- Reboot \n- Shutdown \n- Stop \n- Bash ...")
                         reply_with_message(updates, "Eastereggs: \n \n- Pi \n- 42")
 
-# Adminbereich nur zugelassen nur für Sebastian
+# access only for the admin
                 elif chatid == ADMINID:
                     if chattext == "temp" or chattext == "temperatur": # Temperaturausgabe
                         Temp = subprocess.Popen(["vcgencmd", "measure_temp"], stdout=subprocess.PIPE)
@@ -357,7 +356,7 @@ def main():
                         keyboard = build_keyboard([["Tor"], ["Tor 0", "Tor 1", "Tor 2"], ["Tor in 1", "Tor in 2", "Tastatur"]], False)
                         send_message("Benutzertastatur eingeblendet", chatid, keyboard)
 
-# Erweiterte Funktionen freischalten/sperren
+# locks/unlocks the extended functions
                     elif chattext == "root":
                         if root == False:
                             root = True
@@ -368,7 +367,7 @@ def main():
                             keyboard = build_keyboard([["Tor", "Temperatur", "Uptime"], ["Ifconfig", "Log last", "Benutzer"], ["Sperre", "Ping", "Root"]], False)
                             send_message("Erweiterte Funktionen gesperrt", chatid, keyboard)
 
-# Bestimmte erweiterte Funktionen
+# extended functions
                     elif chattext == "reboot":
                         if root == True:
                             reply_with_message(updates, "RasPi wird neugestartet")
@@ -397,7 +396,7 @@ def main():
                         else:
                             reply_with_message(updates, "Erweiterte Funktionen gesperrt")
 
-# Normale Funktionen
+# functions only for the admin
                     elif chattext == "sperre":
                         if sperre == False:
                             sperre = True
@@ -435,11 +434,11 @@ def main():
                     reply_with_message(updates, "Kein Befehl erkannt") # Sonstige Nachricht
                     print(updates)
 
-# Antwort an Raphael
+# special reply for user 5
             elif chatid == USER5:
                 reply_with_message(updates, "Servus!")
 
-# Antwort an alle anderen
+# reply to not registrated users
             else:
                 name2 = get_name(updates)
                 try:
@@ -455,11 +454,10 @@ def main():
                     nachricht = "%s wollte Zugriff." %(name2)
                     message_to_owner(nachricht) # Nachricht an Admin
 
-# Jedes Mal
+# every time
         zahl = zahl + 1
         print(" ")
 
-# Senden
 if __name__ == '__main__':
     main()
 
