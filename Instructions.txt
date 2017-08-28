@@ -1,6 +1,6 @@
 How to get a telegram bot:
 
-- add the user @botfather
+- add the user @botfather on Telegram
 - create your bot using /newbot
 - choose name and username
 - save your TOKEN

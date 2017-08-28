@@ -143,7 +143,7 @@ def message_gpio_zustand(updates, gpio, ausgabe, antwort, zustand):
 def build_keyboard(keyboard, status):
     reply_markup = {"keyboard": keyboard, "one_time_keyboard": status}
     return json.dumps(reply_markup)
-        
+
 # Definition fur das Senden der Nachricht
 def main():
     sperre = False
@@ -215,7 +215,7 @@ def main():
                 for l in lines:
                     Log_last.write(l)
                 Log_last.close()
-                
+
 # Nachricht weiterverarbeiten
             chatid = get_last_chat_id_and_text(updates)[1]
             chattextgross = get_last_chat_id_and_text(updates)[0]
@@ -232,7 +232,7 @@ def main():
                         message_gpio_on_off(updates, 1, "Tor", "Befehl erkannt")
                     else:
                         reply_with_message(updates, "Garagentorsteuerung vom Admin gesperrt!")
-                
+
 # Tor mit Öffnungszeit
                 elif splittext[0] == "tor" and len(splittext) == 2:
                     try:
